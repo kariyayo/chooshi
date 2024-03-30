@@ -1,4 +1,6 @@
+import 'package:chooshi/screen/top_app_bar_title_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TopScreen extends StatefulWidget {
   const TopScreen({super.key, required this.title});
@@ -72,10 +74,15 @@ class _TopScreenState extends State<TopScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Consumer(
+          builder: (context, ref, _) {
+            final title = ref.watch(topAppBarTitleNotifierProvider);
+            return Text(title);
+          },
+        ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(30.0),
-          child: Container(
+          child: SizedBox(
             height: 30,
             child: ListView(
               key: _tabBarKey,
@@ -109,7 +116,7 @@ class _TopScreenState extends State<TopScreen> {
   }
 }
 
-class _Tab extends StatefulWidget {
+class _Tab extends ConsumerStatefulWidget {
   const _Tab(
       {required this.controller, required this.month, required this.tabBarKey});
 
@@ -118,10 +125,10 @@ class _Tab extends StatefulWidget {
   final GlobalKey tabBarKey;
 
   @override
-  State<_Tab> createState() => _TabState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _TabState();
 }
 
-class _TabState extends State<_Tab> {
+class _TabState extends ConsumerState<_Tab> {
   late Month month;
   late GlobalKey tabBarKey;
   late ScrollController scrollController;
@@ -161,6 +168,7 @@ class _TabState extends State<_Tab> {
         renderObject.localToGlobal(Offset.zero).dx + renderObject.size.width;
     if (left <= tabBarCenter && tabBarCenter < right) {
       print('[${month.year}/${month.month}] i am center =========');
+      ref.read(topAppBarTitleNotifierProvider.notifier).update('${month.year}');
     } else {
       print('[${month.year}/${month.month}] i am NOT center');
     }
