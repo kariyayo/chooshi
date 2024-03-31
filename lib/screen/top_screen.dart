@@ -27,10 +27,12 @@ class _TopScreenState extends State<TopScreen> {
     });
   }
 
-  void _onPageChangedBySwipe(int index) {
+  void _onPageChanged(int index) {
+    print('onPageChanged: $index');
     setState(() {
       _selectedIndex = index;
     });
+    // TODO: 選択されたページインデックスを元に、タブをスクロールする
   }
 
   @override
@@ -81,28 +83,41 @@ class _TopScreenState extends State<TopScreen> {
           },
         ),
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(30.0),
+          preferredSize: const Size.fromHeight(40.0),
           child: SizedBox(
-            height: 30,
-            child: ListView(
+            height: 40,
+            child: ListView.builder(
               key: _tabBarKey,
               controller: _scrollController,
               scrollDirection: Axis.horizontal,
-              // onTap: _onPageChangedByTabTap,
-              children: monthList
-                  .map((month) => _Tab(
-                        controller: _scrollController,
-                        month: month,
-                        tabBarKey: _tabBarKey,
-                      ))
-                  .toList(),
+              itemCount: monthList.length,
+              prototypeItem: _Tab(
+                  controller: _scrollController,
+                  month: monthList[0],
+                  tabBarKey: _tabBarKey),
+              itemBuilder: (BuildContext context, int index) {
+                final month = monthList[index];
+                return ListTile(
+                  onTap: () {
+                    print("onTap: $index");
+                    _onPageChangedByTabTap(index);
+                  },
+                  selected: _selectedIndex == index,
+                  selectedTileColor: Colors.orange,
+                  title: _Tab(
+                    controller: _scrollController,
+                    month: month,
+                    tabBarKey: _tabBarKey,
+                  ),
+                );
+              },
             ),
           ),
         ),
       ),
       body: PageView.builder(
         controller: _pageController,
-        onPageChanged: _onPageChangedBySwipe,
+        onPageChanged: _onPageChanged,
         itemBuilder: (BuildContext context, int index) {
           return Center(child: Text('Page${index + 1}'));
         },
@@ -176,9 +191,10 @@ class _TabState extends ConsumerState<_Tab> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      width: 80,
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Tab(text: '${month.year}/${month.month}'),
+      child: Text('${month.month}'),
     );
   }
 }
