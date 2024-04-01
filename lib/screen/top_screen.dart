@@ -111,7 +111,11 @@ class _TopScreenState extends State<TopScreen> {
                       _onPageChangedByTabTap(index);
                     },
                     selected: _selectedIndex == index,
-                    selectedTileColor: Colors.orange,
+                    shape: _selectedIndex == index
+                        ? const BorderDirectional(
+                            bottom: BorderSide(color: Colors.orange, width: 2),
+                          )
+                        : null,
                     title: _Tab(
                       controller: _scrollController,
                       month: month,
@@ -203,6 +207,7 @@ class _TabState extends ConsumerState<_Tab> {
     return Container(
       width: 80,
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      alignment: Alignment.center,
       child: Text('${month.month}'),
     );
   }
