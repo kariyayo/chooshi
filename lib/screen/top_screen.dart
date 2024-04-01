@@ -1,6 +1,7 @@
 import 'package:chooshi/screen/top_app_bar_title_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class TopScreen extends StatefulWidget {
   const TopScreen({super.key, required this.title});
@@ -13,7 +14,7 @@ class TopScreen extends StatefulWidget {
 
 class _TopScreenState extends State<TopScreen> {
   late PageController _pageController;
-  late ScrollController _scrollController;
+  late AutoScrollController _scrollController;
 
   final GlobalKey _tabBarKey = GlobalKey();
 
@@ -32,7 +33,10 @@ class _TopScreenState extends State<TopScreen> {
     setState(() {
       _selectedIndex = index;
     });
-    // TODO: 選択されたページインデックスを元に、タブをスクロールする
+    _scrollController.scrollToIndex(
+      index,
+      preferPosition: AutoScrollPosition.middle,
+    );
   }
 
   @override
@@ -68,7 +72,7 @@ class _TopScreenState extends State<TopScreen> {
     ];
 
     _pageController = PageController(initialPage: _selectedIndex);
-    _scrollController = ScrollController();
+    _scrollController = AutoScrollController();
   }
 
   @override
@@ -97,17 +101,22 @@ class _TopScreenState extends State<TopScreen> {
                   tabBarKey: _tabBarKey),
               itemBuilder: (BuildContext context, int index) {
                 final month = monthList[index];
-                return ListTile(
-                  onTap: () {
-                    print("onTap: $index");
-                    _onPageChangedByTabTap(index);
-                  },
-                  selected: _selectedIndex == index,
-                  selectedTileColor: Colors.orange,
-                  title: _Tab(
-                    controller: _scrollController,
-                    month: month,
-                    tabBarKey: _tabBarKey,
+                return AutoScrollTag(
+                  key: ValueKey(index),
+                  controller: _scrollController,
+                  index: index,
+                  child: ListTile(
+                    onTap: () {
+                      print("onTap: $index");
+                      _onPageChangedByTabTap(index);
+                    },
+                    selected: _selectedIndex == index,
+                    selectedTileColor: Colors.orange,
+                    title: _Tab(
+                      controller: _scrollController,
+                      month: month,
+                      tabBarKey: _tabBarKey,
+                    ),
                   ),
                 );
               },
