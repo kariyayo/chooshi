@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
-class TopScreen extends StatefulWidget {
+class TopScreen extends ConsumerStatefulWidget {
   const TopScreen({super.key, required this.title});
 
   final String title;
 
   @override
-  State<TopScreen> createState() => _TopScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _TopScreenState();
 }
 
-class _TopScreenState extends State<TopScreen> {
+class _TopScreenState extends ConsumerState<TopScreen> {
   late PageController _pageController;
   late AutoScrollController _scrollController;
 
@@ -96,9 +96,11 @@ class _TopScreenState extends State<TopScreen> {
               scrollDirection: Axis.horizontal,
               itemCount: monthList.length,
               prototypeItem: _Tab(
-                  controller: _scrollController,
-                  month: monthList[0],
-                  tabBarKey: _tabBarKey),
+                controller: _scrollController,
+                month: monthList[0],
+                tabBarKey: _tabBarKey,
+                centerCallback: () {},
+              ),
               itemBuilder: (BuildContext context, int index) {
                 final month = monthList[index];
                 return AutoScrollTag(
@@ -120,6 +122,16 @@ class _TopScreenState extends State<TopScreen> {
                       controller: _scrollController,
                       month: month,
                       tabBarKey: _tabBarKey,
+                      centerCallback: () {
+                        final notifier =
+                            ref.read(topAppBarTitleNotifierProvider.notifier);
+                        if (_selectedIndex < 3 && index < 3) {
+                          // 3個目までのタブは中央のタブではなく選択済みのタブをタイトルに表示する
+                          notifier.update('${monthList[_selectedIndex].year}');
+                        } else {
+                          notifier.update('${month.year}');
+                        }
+                      },
                     ),
                   ),
                 );
@@ -144,22 +156,28 @@ class _TopScreenState extends State<TopScreen> {
   }
 }
 
-class _Tab extends ConsumerStatefulWidget {
-  const _Tab(
-      {required this.controller, required this.month, required this.tabBarKey});
+class _Tab extends StatefulWidget {
+  const _Tab({
+    required this.controller,
+    required this.month,
+    required this.tabBarKey,
+    required this.centerCallback,
+  });
 
   final ScrollController controller;
   final Month month;
   final GlobalKey tabBarKey;
+  final VoidCallback centerCallback;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TabState();
+  State<StatefulWidget> createState() => _TabState();
 }
 
-class _TabState extends ConsumerState<_Tab> {
+class _TabState extends State<_Tab> {
   late Month month;
   late GlobalKey tabBarKey;
   late ScrollController scrollController;
+  late VoidCallback centerCallback;
 
   @override
   void initState() {
@@ -167,6 +185,7 @@ class _TabState extends ConsumerState<_Tab> {
     month = widget.month;
     tabBarKey = widget.tabBarKey;
     scrollController = widget.controller;
+    centerCallback = widget.centerCallback;
   }
 
   @override
@@ -196,7 +215,7 @@ class _TabState extends ConsumerState<_Tab> {
         renderObject.localToGlobal(Offset.zero).dx + renderObject.size.width;
     if (left <= tabBarCenter && tabBarCenter < right) {
       print('[${month.year}/${month.month}] i am center =========');
-      ref.read(topAppBarTitleNotifierProvider.notifier).update('${month.year}');
+      centerCallback();
     } else {
       print('[${month.year}/${month.month}] i am NOT center');
     }
