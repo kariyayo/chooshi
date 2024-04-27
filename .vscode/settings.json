@@ -1,0 +1,18 @@
+{
+  "dart.lineLength": 120,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.dart": "${capture}.g.dart, $(capture).freezed.dart"
+  },
+  // @see https://dartcode.org/docs/settings/#dartlinelength
+  // @see https://dartcode.org/docs/recommended-settings/
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.rulers": [120],
+    "editor.selectionHighlight": false,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": "off"
+  }
+}

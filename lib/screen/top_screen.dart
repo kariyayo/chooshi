@@ -51,8 +51,7 @@ class _TopScreenState extends ConsumerState<TopScreen> {
   }
 
   void _moreMonths() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
       final m = _months.last;
       DateTime d = DateTime(m.year, m.month + 1);
       final months = <Month>[];
@@ -114,12 +113,10 @@ class _TopScreenState extends ConsumerState<TopScreen> {
                       month: month,
                       tabBarKey: _tabBarKey,
                       centerCallback: () {
-                        final notifier =
-                            ref.read(topAppBarTitleNotifierProvider.notifier);
+                        final notifier = ref.read(topAppBarTitleNotifierProvider.notifier);
                         if (_selectedIndex < 3 && index < 3) {
                           // 3個目までのタブは中央のタブではなく選択済みのタブをタイトルに表示する
-                          notifier.update(
-                              '${_months.elementAt(_selectedIndex).year}');
+                          notifier.update('${_months.elementAt(_selectedIndex).year}');
                         } else {
                           notifier.update('${month.year}');
                         }
@@ -195,16 +192,14 @@ class _TabState extends State<_Tab> {
   }
 
   void _onScroll() {
-    final RenderBox? tabBarRenderObject =
-        tabBarKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? tabBarRenderObject = tabBarKey.currentContext?.findRenderObject() as RenderBox?;
     if (tabBarRenderObject == null) return;
     final tabBarCenter = tabBarRenderObject.size.width / 2;
     if (!context.mounted) return;
     final RenderBox? renderObject = context.findRenderObject() as RenderBox?;
     if (renderObject == null) return;
     final left = renderObject.localToGlobal(Offset.zero).dx;
-    final right =
-        renderObject.localToGlobal(Offset.zero).dx + renderObject.size.width;
+    final right = renderObject.localToGlobal(Offset.zero).dx + renderObject.size.width;
     if (left <= tabBarCenter && tabBarCenter < right) {
       centerCallback();
     }
@@ -236,8 +231,7 @@ class Month implements Comparable<Month> {
   }
 
   @override
-  bool operator ==(Object other) =>
-      other is Month && year == other.year && month == other.month;
+  bool operator ==(Object other) => other is Month && year == other.year && month == other.month;
 
   @override
   int get hashCode => year.hashCode ^ month.hashCode;
