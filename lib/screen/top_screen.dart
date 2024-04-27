@@ -13,13 +13,12 @@ class TopScreen extends ConsumerStatefulWidget {
 }
 
 class _TopScreenState extends ConsumerState<TopScreen> {
-  late PageController _pageController;
-  late AutoScrollController _scrollController;
-
   final GlobalKey _tabBarKey = GlobalKey();
+  final _scrollController = AutoScrollController();
+  final _months = <Month>{};
 
-  List<Month> monthList = [];
   int _selectedIndex = 0;
+  late PageController _pageController;
 
   void _onPageChangedByTabTap(int index) {
     setState(() {
@@ -42,37 +41,29 @@ class _TopScreenState extends ConsumerState<TopScreen> {
   @override
   void initState() {
     super.initState();
-    monthList = [
-      const Month(2024, 2),
-      const Month(2024, 1),
-      const Month(2023, 12),
-      const Month(2023, 11),
-      const Month(2023, 10),
-      const Month(2023, 9),
-      const Month(2023, 8),
-      const Month(2023, 7),
-      const Month(2023, 6),
-      const Month(2023, 5),
-      const Month(2023, 4),
-      const Month(2023, 3),
-      const Month(2023, 2),
-      const Month(2023, 1),
-      const Month(2022, 12),
-      const Month(2022, 11),
-      const Month(2022, 10),
-      const Month(2022, 9),
-      const Month(2022, 8),
-      const Month(2022, 7),
-      const Month(2022, 6),
-      const Month(2022, 5),
-      const Month(2022, 4),
-      const Month(2022, 3),
-      const Month(2022, 2),
-      const Month(2022, 1),
-    ];
-
+    DateTime now = DateTime.now();
+    for (var i = 0; i < 10; i++) {
+      _months.add(Month(now.year, now.month));
+      now = DateTime(now.year, now.month - 1);
+    }
     _pageController = PageController(initialPage: _selectedIndex);
-    _scrollController = AutoScrollController();
+    _scrollController.addListener(_moreMonths);
+  }
+
+  void _moreMonths() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      final m = _months.last;
+      DateTime d = DateTime(m.year, m.month + 1);
+      final months = <Month>[];
+      for (var i = 0; i < 10; i++) {
+        months.add(Month(d.year, d.month));
+        d = DateTime(d.year, d.month - 1);
+      }
+      setState(() {
+        _months.addAll(months);
+      });
+    }
   }
 
   @override
@@ -94,15 +85,15 @@ class _TopScreenState extends ConsumerState<TopScreen> {
               key: _tabBarKey,
               controller: _scrollController,
               scrollDirection: Axis.horizontal,
-              itemCount: monthList.length,
+              itemCount: _months.length,
               prototypeItem: _Tab(
                 controller: _scrollController,
-                month: monthList[0],
+                month: _months.elementAt(0),
                 tabBarKey: _tabBarKey,
                 centerCallback: () {},
               ),
               itemBuilder: (BuildContext context, int index) {
-                final month = monthList[index];
+                final month = _months.elementAt(index);
                 return AutoScrollTag(
                   key: ValueKey(index),
                   controller: _scrollController,
@@ -127,7 +118,8 @@ class _TopScreenState extends ConsumerState<TopScreen> {
                             ref.read(topAppBarTitleNotifierProvider.notifier);
                         if (_selectedIndex < 3 && index < 3) {
                           // 3個目までのタブは中央のタブではなく選択済みのタブをタイトルに表示する
-                          notifier.update('${monthList[_selectedIndex].year}');
+                          notifier.update(
+                              '${_months.elementAt(_selectedIndex).year}');
                         } else {
                           notifier.update('${month.year}');
                         }
@@ -214,10 +206,7 @@ class _TabState extends State<_Tab> {
     final right =
         renderObject.localToGlobal(Offset.zero).dx + renderObject.size.width;
     if (left <= tabBarCenter && tabBarCenter < right) {
-      print('[${month.year}/${month.month}] i am center =========');
       centerCallback();
-    } else {
-      print('[${month.year}/${month.month}] i am NOT center');
     }
   }
 
@@ -233,8 +222,23 @@ class _TabState extends State<_Tab> {
 }
 
 @immutable
-class Month {
+class Month implements Comparable<Month> {
   final int year;
   final int month;
   const Month(this.year, this.month);
+
+  @override
+  int compareTo(Month other) {
+    if (year != other.year) {
+      return year.compareTo(other.year);
+    }
+    return month.compareTo(other.month);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is Month && year == other.year && month == other.month;
+
+  @override
+  int get hashCode => year.hashCode ^ month.hashCode;
 }
