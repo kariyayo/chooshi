@@ -1,3 +1,4 @@
+import 'package:chooshi/model/month.dart';
 import 'package:chooshi/screen/top_app_bar_title_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,7 +44,7 @@ class _TopScreenState extends ConsumerState<TopScreen> {
     super.initState();
     DateTime now = DateTime.now();
     for (var i = 0; i < 10; i++) {
-      _months.add(Month(now.year, now.month));
+      _months.add(Month(year: now.year, month: now.month));
       now = DateTime(now.year, now.month - 1);
     }
     _pageController = PageController(initialPage: _selectedIndex);
@@ -56,7 +57,7 @@ class _TopScreenState extends ConsumerState<TopScreen> {
       DateTime d = DateTime(m.year, m.month + 1);
       final months = <Month>[];
       for (var i = 0; i < 10; i++) {
-        months.add(Month(d.year, d.month));
+        months.add(Month(year: d.year, month: d.month));
         d = DateTime(d.year, d.month - 1);
       }
       setState(() {
@@ -214,25 +215,4 @@ class _TabState extends State<_Tab> {
       child: Text('${month.month}'),
     );
   }
-}
-
-@immutable
-class Month implements Comparable<Month> {
-  final int year;
-  final int month;
-  const Month(this.year, this.month);
-
-  @override
-  int compareTo(Month other) {
-    if (year != other.year) {
-      return year.compareTo(other.year);
-    }
-    return month.compareTo(other.month);
-  }
-
-  @override
-  bool operator ==(Object other) => other is Month && year == other.year && month == other.month;
-
-  @override
-  int get hashCode => year.hashCode ^ month.hashCode;
 }
