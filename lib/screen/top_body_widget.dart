@@ -1,3 +1,5 @@
+import 'package:chooshi/model/month.dart';
+import 'package:chooshi/screen/post_list_notifier.dart';
 import 'package:chooshi/screen/top_seleted_page_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,8 +34,21 @@ class _TopBodyWidgetState extends ConsumerState<TopBodyWidget> {
       controller: _pageController,
       onPageChanged: _onPageChanged,
       itemBuilder: (BuildContext context, int index) {
-        return Center(child: Text('Page${index + 1}'));
+        return _Content(pageIndex: index);
       },
     );
+  }
+}
+
+class _Content extends ConsumerWidget {
+  const _Content({required this.pageIndex});
+  final int pageIndex;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final now = DateTime.now();
+    final dt = DateTime(now.year, now.month - pageIndex);
+    final data = ref.watch(postListNotifierProvider(Month(year: dt.year, month: dt.month)));
+    print('pageIndex: $pageIndex, data: $data');
+    return Center(child: Text('Page$pageIndex'));
   }
 }
