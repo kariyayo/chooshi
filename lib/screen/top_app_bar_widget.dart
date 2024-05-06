@@ -11,12 +11,14 @@ class TopAppBarWidget extends ConsumerStatefulWidget implements PreferredSizeWid
   ConsumerState<ConsumerStatefulWidget> createState() => _TopAppBarWidgetState();
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight + _TopAppBarWidgetState.height);
 }
 
 class _TopAppBarWidgetState extends ConsumerState<TopAppBarWidget> {
   final GlobalKey _tabBarKey = GlobalKey();
   final _scrollController = AutoScrollController();
+
+  static const double height = 40.0;
 
   final _months = <Month>{};
   var _title = '';
@@ -76,9 +78,9 @@ class _TopAppBarWidgetState extends ConsumerState<TopAppBarWidget> {
         },
       ),
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(40.0),
+        preferredSize: const Size.fromHeight(height),
         child: SizedBox(
-          height: 40,
+          height: height,
           child: ListView.builder(
             key: _tabBarKey,
             controller: _scrollController,
