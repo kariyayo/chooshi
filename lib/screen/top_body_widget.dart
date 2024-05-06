@@ -78,12 +78,12 @@ class _PostState extends State<_Posts> {
     if (posts.isEmpty) {
       return const Center(child: Text('No data'));
     } else {
-      return ListView.builder(
+      return ListView.separated(
         controller: _scrollController,
         itemCount: posts.length,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemExtent: 80,
+        separatorBuilder: (BuildContext context, int index) => const Divider(),
         itemBuilder: (BuildContext context, int index) {
           final dt = posts[index].timestamp;
           var formatter = DateFormat('EE');
