@@ -1,4 +1,5 @@
 import 'package:chooshi/model/month.dart';
+import 'package:chooshi/model/post.dart';
 import 'package:chooshi/screen/post_list_notifier.dart';
 import 'package:chooshi/screen/top_seleted_page_notifier.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,6 @@ class _TopBodyWidgetState extends ConsumerState<TopBodyWidget> {
   late PageController _pageController;
 
   void _onPageChanged(int index) {
-    print('onPageChanged: $index');
     ref.read(topSelectedPageNotifierProvider.notifier).update(index);
   }
 
@@ -47,8 +47,51 @@ class _Content extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final now = DateTime.now();
     final dt = DateTime(now.year, now.month - pageIndex);
-    final data = ref.watch(postListNotifierProvider(Month(year: dt.year, month: dt.month)));
-    print('pageIndex: $pageIndex, data: $data');
-    return Center(child: Text('Page$pageIndex'));
+    final asyncPosts = ref.watch(postListNotifierProvider(Month(year: dt.year, month: dt.month)));
+    switch (asyncPosts) {
+      case AsyncData(:final value):
+        return _Posts(value);
+      case AsyncError(:final error):
+        return Center(child: Text('Error: $error'));
+      default:
+        return const Center(child: CircularProgressIndicator());
+    }
+  }
+}
+
+class _Posts extends StatefulWidget {
+  const _Posts(this.posts);
+  final List<Post> posts;
+
+  @override
+  State<StatefulWidget> createState() => _PostState();
+}
+
+class _PostState extends State<_Posts> {
+  final _scrollController = ScrollController();
+
+  @override
+  Widget build(BuildContext context) {
+    final posts = widget.posts;
+    if (posts.isEmpty) {
+      return const Center(child: Text('No data'));
+    } else {
+      return ListView.builder(
+        controller: _scrollController,
+        itemCount: posts.length,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        prototypeItem: const ListTile(
+          title: Text('Rating'),
+          subtitle: Text('Timestamp'),
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+            title: Text(posts[index].rating.toString()),
+            subtitle: Text(posts[index].timestamp.toString()),
+          );
+        },
+      );
+    }
   }
 }
