@@ -13,6 +13,15 @@ class PostListNotifier extends AutoDisposeFamilyAsyncNotifier<List<Post>, Month>
 
   @override
   Future<List<Post>> build(Month arg) async {
-    return _store.fetchByYearMonth(this.arg);
+    return _fetch();
+  }
+
+  Future<void> refresh() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => _fetch());
+  }
+
+  Future<List<Post>> _fetch() async {
+    return _store.fetchByYearMonth(arg);
   }
 }
