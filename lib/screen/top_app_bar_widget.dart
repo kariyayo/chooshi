@@ -11,14 +11,16 @@ class TopAppBarWidget extends ConsumerStatefulWidget implements PreferredSizeWid
   ConsumerState<ConsumerStatefulWidget> createState() => _TopAppBarWidgetState();
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight + _TopAppBarWidgetState.height);
+  Size get preferredSize =>
+      const Size.fromHeight(_TopAppBarWidgetState.toolbarHeight + _TopAppBarWidgetState.bottomHeight);
 }
 
 class _TopAppBarWidgetState extends ConsumerState<TopAppBarWidget> {
   final GlobalKey _tabBarKey = GlobalKey();
   final _scrollController = AutoScrollController();
 
-  static const double height = 40.0;
+  static const double toolbarHeight = kToolbarHeight - 16;
+  static const double bottomHeight = 40.0;
 
   final _months = <Month>{};
   var _title = '';
@@ -74,27 +76,27 @@ class _TopAppBarWidgetState extends ConsumerState<TopAppBarWidget> {
       backgroundColor: Colors.white,
       title: Consumer(
         builder: (context, ref, _) {
-          return Text(_title);
+          return Padding(
+            padding: const EdgeInsets.only(top: 12.0),
+            child: Text(_title),
+          );
         },
       ),
+      toolbarHeight: toolbarHeight,
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(height),
+        preferredSize: const Size.fromHeight(bottomHeight),
         child: Container(
           decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: Colors.grey.shade300, width: 1)),
           ),
-          height: height,
+          height: bottomHeight,
           child: ListView.builder(
             key: _tabBarKey,
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
             itemCount: _months.length,
-            prototypeItem: _Tab(
-              controller: _scrollController,
-              month: _months.elementAt(0),
-              tabBarKey: _tabBarKey,
-              centerCallback: () {},
-            ),
+            itemExtent: 100,
+            padding: EdgeInsets.zero,
             itemBuilder: (BuildContext context, int index) {
               final month = _months.elementAt(index);
               final currentPageIndex = ref.watch(topSelectedPageNotifierProvider);
@@ -103,16 +105,19 @@ class _TopAppBarWidgetState extends ConsumerState<TopAppBarWidget> {
                 controller: _scrollController,
                 index: index,
                 child: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  horizontalTitleGap: 0,
+                  titleAlignment: ListTileTitleAlignment.titleHeight,
                   onTap: () {
-                    print("onTap: $index");
                     _onPageChangedByTabTap(index);
                   },
                   selected: currentPageIndex == index,
                   shape: currentPageIndex == index
-                      ? const BorderDirectional(
-                          bottom: BorderSide(color: Colors.orange, width: 2),
+                      ? BorderDirectional(
+                          bottom: BorderSide(color: Theme.of(context).primaryColorLight, width: 4),
                         )
                       : null,
+                  dense: true,
                   title: _Tab(
                     controller: _scrollController,
                     month: month,
@@ -199,10 +204,11 @@ class _TabState extends State<_Tab> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 80,
+      height: 28,
+      width: 100,
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       alignment: Alignment.center,
-      child: Text('${month.month}'),
+      child: Text(month.label),
     );
   }
 }
