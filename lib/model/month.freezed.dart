@@ -99,8 +99,8 @@ class __$$MonthImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$MonthImpl implements _Month {
-  const _$MonthImpl({required this.year, required this.month});
+class _$MonthImpl extends _Month {
+  const _$MonthImpl({required this.year, required this.month}) : super._();
 
   @override
   final int year;
@@ -131,9 +131,10 @@ class _$MonthImpl implements _Month {
       __$$MonthImplCopyWithImpl<_$MonthImpl>(this, _$identity);
 }
 
-abstract class _Month implements Month {
+abstract class _Month extends Month {
   const factory _Month({required final int year, required final int month}) =
       _$MonthImpl;
+  const _Month._() : super._();
 
   @override
   int get year;
