@@ -71,7 +71,7 @@ class _TopAppBarWidgetState extends ConsumerState<TopAppBarWidget> {
       );
     });
     return AppBar(
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      backgroundColor: Colors.white,
       title: Consumer(
         builder: (context, ref, _) {
           return Text(_title);
@@ -79,7 +79,10 @@ class _TopAppBarWidgetState extends ConsumerState<TopAppBarWidget> {
       ),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(height),
-        child: SizedBox(
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: Colors.grey.shade300, width: 1)),
+          ),
           height: height,
           child: ListView.builder(
             key: _tabBarKey,

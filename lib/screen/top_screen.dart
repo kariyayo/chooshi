@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TopScreen extends ConsumerWidget {
-  const TopScreen({super.key, required this.title});
-
-  final String title;
+  const TopScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
