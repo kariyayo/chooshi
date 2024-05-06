@@ -1,4 +1,6 @@
 import 'package:chooshi/dialog/post_dialog.dart';
+import 'package:chooshi/model/month.dart';
+import 'package:chooshi/screen/post_list_notifier.dart';
 import 'package:chooshi/screen/top_app_bar_widget.dart';
 import 'package:chooshi/screen/top_body_widget.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +15,10 @@ class TopScreen extends ConsumerWidget {
       appBar: const TopAppBarWidget(),
       body: const TopBodyWidget(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showPostDialog(context, ref, DateTime.now());
+        onPressed: () async {
+          final now = DateTime.now();
+          await showPostDialog(context, ref, now);
+          ref.read(postListNotifierProvider(Month(year: now.year, month: now.month)).notifier).refresh();
         },
         child: const Icon(Icons.add),
       ),

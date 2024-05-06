@@ -3,7 +3,9 @@ import 'package:chooshi/model/post.dart';
 import 'package:chooshi/screen/post_list_notifier.dart';
 import 'package:chooshi/screen/top_seleted_page_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class TopBodyWidget extends ConsumerStatefulWidget {
   const TopBodyWidget({super.key});
@@ -81,14 +83,28 @@ class _PostState extends State<_Posts> {
         itemCount: posts.length,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        prototypeItem: const ListTile(
-          title: Text('Rating'),
-          subtitle: Text('Timestamp'),
-        ),
+        itemExtent: 80,
         itemBuilder: (BuildContext context, int index) {
+          final dt = posts[index].timestamp;
+          var formatter = DateFormat('EE');
           return ListTile(
-            title: Text(posts[index].rating.toString()),
-            subtitle: Text(posts[index].timestamp.toString()),
+            contentPadding: const EdgeInsets.all(8),
+            // dense: true,
+            leading: Text(
+              '${formatter.format(dt)} ${dt.day}\n${dt.hour}:${dt.minute.toString().padLeft(2, '0')}',
+              style: const TextStyle(fontSize: 16),
+            ),
+            title: RatingBar.builder(
+              initialRating: posts[index].rating.toDouble(),
+              ignoreGestures: true,
+              tapOnlyMode: true,
+              updateOnDrag: false,
+              minRating: 1,
+              direction: Axis.horizontal,
+              itemCount: 5,
+              itemBuilder: (context, _) => const Icon(Icons.star, color: Colors.amber),
+              onRatingUpdate: (_) {},
+            ),
           );
         },
       );
