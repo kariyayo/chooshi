@@ -92,13 +92,14 @@ class _TagInputFieldState extends ConsumerState<_TagInputField> {
       children: [
         TextFormField(
           controller: _textEditorController,
-          onFieldSubmitted: (input) {
+          onFieldSubmitted: (input) async {
             final value = input.trim();
             if (value.isEmpty) {
               return;
             }
             final newTags = [..._inputedTags, value];
             _textEditorController.clear();
+            await ref.read(postNotifierProvider.notifier).updateTags(DateTime.now(), newTags);
             setState(() {
               _inputedTags = newTags;
             });
@@ -120,9 +121,12 @@ class _TagInputFieldState extends ConsumerState<_TagInputField> {
                   padding: const EdgeInsets.only(right: 4),
                   child: Chip(
                     label: Text(s),
-                    onDeleted: () {
+                    onDeleted: () async {
+                      final newTags = [..._inputedTags];
+                      newTags.remove(s);
+                      await ref.read(postNotifierProvider.notifier).updateTags(DateTime.now(), newTags);
                       setState(() {
-                        _inputedTags.remove(s);
+                        _inputedTags = newTags;
                       });
                     },
                   ),

@@ -22,6 +22,7 @@ Post _$PostFromJson(Map<String, dynamic> json) {
 mixin _$Post {
   DateTime get timestamp => throw _privateConstructorUsedError;
   int get rating => throw _privateConstructorUsedError;
+  List<String> get tags => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -33,7 +34,7 @@ abstract class $PostCopyWith<$Res> {
   factory $PostCopyWith(Post value, $Res Function(Post) then) =
       _$PostCopyWithImpl<$Res, Post>;
   @useResult
-  $Res call({DateTime timestamp, int rating});
+  $Res call({DateTime timestamp, int rating, List<String> tags});
 }
 
 /// @nodoc
@@ -51,6 +52,7 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
   $Res call({
     Object? timestamp = null,
     Object? rating = null,
+    Object? tags = null,
   }) {
     return _then(_value.copyWith(
       timestamp: null == timestamp
@@ -61,6 +63,10 @@ class _$PostCopyWithImpl<$Res, $Val extends Post>
           ? _value.rating
           : rating // ignore: cast_nullable_to_non_nullable
               as int,
+      tags: null == tags
+          ? _value.tags
+          : tags // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ) as $Val);
   }
 }
@@ -72,7 +78,7 @@ abstract class _$$PostImplCopyWith<$Res> implements $PostCopyWith<$Res> {
       __$$PostImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({DateTime timestamp, int rating});
+  $Res call({DateTime timestamp, int rating, List<String> tags});
 }
 
 /// @nodoc
@@ -87,6 +93,7 @@ class __$$PostImplCopyWithImpl<$Res>
   $Res call({
     Object? timestamp = null,
     Object? rating = null,
+    Object? tags = null,
   }) {
     return _then(_$PostImpl(
       timestamp: null == timestamp
@@ -97,6 +104,10 @@ class __$$PostImplCopyWithImpl<$Res>
           ? _value.rating
           : rating // ignore: cast_nullable_to_non_nullable
               as int,
+      tags: null == tags
+          ? _value._tags
+          : tags // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -105,7 +116,11 @@ class __$$PostImplCopyWithImpl<$Res>
 
 @JsonSerializable(explicitToJson: true)
 class _$PostImpl implements _Post {
-  const _$PostImpl({required this.timestamp, required this.rating});
+  const _$PostImpl(
+      {required this.timestamp,
+      required this.rating,
+      required final List<String> tags})
+      : _tags = tags;
 
   factory _$PostImpl.fromJson(Map<String, dynamic> json) =>
       _$$PostImplFromJson(json);
@@ -114,10 +129,17 @@ class _$PostImpl implements _Post {
   final DateTime timestamp;
   @override
   final int rating;
+  final List<String> _tags;
+  @override
+  List<String> get tags {
+    if (_tags is EqualUnmodifiableListView) return _tags;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_tags);
+  }
 
   @override
   String toString() {
-    return 'Post(timestamp: $timestamp, rating: $rating)';
+    return 'Post(timestamp: $timestamp, rating: $rating, tags: $tags)';
   }
 
   @override
@@ -127,12 +149,14 @@ class _$PostImpl implements _Post {
             other is _$PostImpl &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
-            (identical(other.rating, rating) || other.rating == rating));
+            (identical(other.rating, rating) || other.rating == rating) &&
+            const DeepCollectionEquality().equals(other._tags, _tags));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, timestamp, rating);
+  int get hashCode => Object.hash(runtimeType, timestamp, rating,
+      const DeepCollectionEquality().hash(_tags));
 
   @JsonKey(ignore: true)
   @override
@@ -151,7 +175,8 @@ class _$PostImpl implements _Post {
 abstract class _Post implements Post {
   const factory _Post(
       {required final DateTime timestamp,
-      required final int rating}) = _$PostImpl;
+      required final int rating,
+      required final List<String> tags}) = _$PostImpl;
 
   factory _Post.fromJson(Map<String, dynamic> json) = _$PostImpl.fromJson;
 
@@ -159,6 +184,8 @@ abstract class _Post implements Post {
   DateTime get timestamp;
   @override
   int get rating;
+  @override
+  List<String> get tags;
   @override
   @JsonKey(ignore: true)
   _$$PostImplCopyWith<_$PostImpl> get copyWith =>
