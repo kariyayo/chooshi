@@ -85,7 +85,8 @@ class _PostState extends State<_Posts> {
         physics: const NeverScrollableScrollPhysics(),
         separatorBuilder: (BuildContext context, int index) => const Divider(),
         itemBuilder: (BuildContext context, int index) {
-          final dt = posts[index].timestamp;
+          var post = posts[index];
+          final dt = post.timestamp;
           var formatter = DateFormat('EE');
           return ListTile(
             contentPadding: const EdgeInsets.all(8),
@@ -94,16 +95,37 @@ class _PostState extends State<_Posts> {
               '${formatter.format(dt)} ${dt.day}\n${dt.hour}:${dt.minute.toString().padLeft(2, '0')}',
               style: const TextStyle(fontSize: 16),
             ),
-            title: RatingBar.builder(
-              initialRating: posts[index].rating.toDouble(),
-              ignoreGestures: true,
-              tapOnlyMode: true,
-              updateOnDrag: false,
-              minRating: 1,
-              direction: Axis.horizontal,
-              itemCount: 5,
-              itemBuilder: (context, _) => const Icon(Icons.star, color: Colors.amber),
-              onRatingUpdate: (_) {},
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RatingBar.builder(
+                  initialRating: post.rating.toDouble(),
+                  ignoreGestures: true,
+                  tapOnlyMode: true,
+                  updateOnDrag: false,
+                  minRating: 1,
+                  direction: Axis.horizontal,
+                  itemCount: 5,
+                  itemBuilder: (context, _) => const Icon(Icons.star, color: Colors.amber),
+                  onRatingUpdate: (_) {},
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 40,
+                  width: double.maxFinite,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: post.tags.map((s) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: Chip(
+                          label: Text(s),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
             ),
           );
         },

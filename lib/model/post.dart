@@ -9,6 +9,7 @@ class Post with _$Post {
   const factory Post({
     required DateTime timestamp,
     required int rating,
+    required List<String> tags,
   }) = _Post;
 
   factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);

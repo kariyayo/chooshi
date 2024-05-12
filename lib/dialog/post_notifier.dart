@@ -20,7 +20,16 @@ class PostNotifier extends AutoDisposeAsyncNotifier<Post?> {
     if (previous != null) {
       state = AsyncData(previous.copyWith(rating: newRating));
     } else {
-      state = AsyncData(Post(timestamp: timestamp, rating: newRating));
+      state = AsyncData(Post(timestamp: timestamp, rating: newRating, tags: []));
+    }
+  }
+
+  Future<void> updateTags(DateTime timestamp, List<String> tags) async {
+    final previous = await future;
+    if (previous != null) {
+      state = AsyncData(previous.copyWith(tags: tags));
+    } else {
+      state = AsyncData(Post(timestamp: timestamp, rating: 0, tags: []));
     }
   }
 
@@ -32,6 +41,12 @@ class PostNotifier extends AutoDisposeAsyncNotifier<Post?> {
       _store.add(data),
       Future.delayed(const Duration(seconds: 3)),
     ]);
-    state = await AsyncValue.guard(() => Future.value(Post(timestamp: data.timestamp, rating: data.rating)));
+    state = await AsyncValue.guard(
+      () => Future.value(Post(
+        timestamp: data.timestamp,
+        rating: data.rating,
+        tags: data.tags,
+      )),
+    );
   }
 }
