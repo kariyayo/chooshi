@@ -86,50 +86,77 @@ class _PostState extends State<_Posts> {
         separatorBuilder: (BuildContext context, int index) => const Divider(),
         itemBuilder: (BuildContext context, int index) {
           var post = posts[index];
-          final dt = post.timestamp;
-          var formatter = DateFormat('EE');
-          return ListTile(
-            contentPadding: const EdgeInsets.all(8),
-            // dense: true,
-            leading: Text(
-              '${formatter.format(dt)} ${dt.day}\n${dt.hour}:${dt.minute.toString().padLeft(2, '0')}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                RatingBar.builder(
-                  initialRating: post.rating.toDouble(),
-                  ignoreGestures: true,
-                  tapOnlyMode: true,
-                  updateOnDrag: false,
-                  minRating: 1,
-                  direction: Axis.horizontal,
-                  itemCount: 5,
-                  itemBuilder: (context, _) => const Icon(Icons.star, color: Colors.amber),
-                  onRatingUpdate: (_) {},
-                ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  height: 40,
-                  width: double.maxFinite,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: post.tags.map((s) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 4),
-                        child: Chip(
-                          label: Text(s),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
-            ),
-          );
+          return _PostRow(post);
         },
       );
     }
+  }
+}
+
+class _PostRow extends ConsumerWidget {
+  const _PostRow(this.post);
+  final Post post;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dt = post.timestamp;
+    var formatter = DateFormat('EE');
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+      // dense: true,
+      leading: Text(
+        '${formatter.format(dt)} ${dt.day}\n${dt.hour}:${dt.minute.toString().padLeft(2, '0')}',
+        style: const TextStyle(fontSize: 16),
+      ),
+      title: Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: RatingBar.builder(
+          initialRating: post.rating.toDouble(),
+          ignoreGestures: true,
+          tapOnlyMode: true,
+          updateOnDrag: false,
+          minRating: 1,
+          direction: Axis.horizontal,
+          itemCount: 5,
+          itemBuilder: (context, _) => const Icon(Icons.star, color: Colors.amber),
+          onRatingUpdate: (_) {},
+        ),
+      ),
+      subtitle: SizedBox(
+        height: 40,
+        width: double.maxFinite,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: post.tags.map((s) {
+            return Padding(
+              padding: const EdgeInsets.only(right: 4),
+              child: Chip(
+                label: Text(s),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+      trailing: GestureDetector(
+        child: const Padding(
+          padding: EdgeInsets.only(right: 16.0),
+          child: Icon(Icons.more_vert),
+        ),
+        onTapDown: (details) {
+          final pos = details.globalPosition;
+          showMenu(
+            context: context,
+            position: RelativeRect.fromLTRB(pos.dx, pos.dy, 0, 0),
+            items: [
+              PopupMenuItem(
+                child: const Row(children: [Icon(Icons.delete), Text('Remove')]),
+                onTap: () {
+                  ref.read(postListNotifierProvider(Month(year: dt.year, month: dt.month)).notifier).remove(post);
+                },
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 }

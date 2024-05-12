@@ -24,4 +24,9 @@ class PostListNotifier extends AutoDisposeFamilyAsyncNotifier<List<Post>, Month>
   Future<List<Post>> _fetch() async {
     return _store.fetchByYearMonth(arg);
   }
+
+  Future<void> remove(Post post) async {
+    await _store.remove(post);
+    refresh();
+  }
 }
