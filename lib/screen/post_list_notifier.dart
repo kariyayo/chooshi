@@ -3,30 +3,25 @@ import 'package:chooshi/model/post.dart';
 import 'package:chooshi/storage/post_store.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final postListNotifierProvider = AsyncNotifierProvider.autoDispose.family<PostListNotifier, List<Post>, Month>(
-  () => PostListNotifier(PostStore()),
-);
+final postListNotifierProvider =
+    NotifierProvider.autoDispose.family<PostListNotifier, List<Post>, Month>(PostListNotifier.new);
 
-class PostListNotifier extends AutoDisposeFamilyAsyncNotifier<List<Post>, Month> {
-  PostListNotifier(this._store);
-  final PostStore _store;
-
+class PostListNotifier extends AutoDisposeFamilyNotifier<List<Post>, Month> {
   @override
-  Future<List<Post>> build(Month arg) async {
+  List<Post> build(Month arg) {
     return _fetch();
   }
 
-  Future<void> refresh() async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _fetch());
+  void refresh() async {
+    state = _fetch();
   }
 
-  Future<List<Post>> _fetch() async {
-    return _store.fetchByYearMonth(arg);
+  List<Post> _fetch() {
+    return ref.read(postStoreProvider).fetchByYearMonth(arg);
   }
 
   Future<void> remove(Post post) async {
-    await _store.remove(post);
+    ref.read(postStoreProvider).remove(post);
     refresh();
   }
 }

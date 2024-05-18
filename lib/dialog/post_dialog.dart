@@ -22,20 +22,15 @@ Future<void> showPostDialog(BuildContext context, WidgetRef ref, DateTime dateTi
           child: const Text('Cancel'),
         ),
         Consumer(builder: (BuildContext context, WidgetRef ref, Widget? child) {
-          final asyncData = ref.watch(postNotifierProvider);
-          if (asyncData.isLoading) {
-            return const CircularProgressIndicator();
-          } else {
-            return TextButton(
-              onPressed: () async {
-                await ref.read(postNotifierProvider.notifier).addPost();
-                if (context.mounted) {
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text('OK'),
-            );
-          }
+          return TextButton(
+            onPressed: () {
+              ref.read(postNotifierProvider.notifier).addPost();
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('OK'),
+          );
         }),
       ],
     ),
@@ -49,6 +44,7 @@ class _Content extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final _ = ref.watch(postNotifierProvider);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -57,8 +53,8 @@ class _Content extends ConsumerWidget {
           direction: Axis.horizontal,
           itemCount: 5,
           itemBuilder: (context, _) => const Icon(Icons.star, color: Colors.amber),
-          onRatingUpdate: (newRating) async {
-            await ref.read(postNotifierProvider.notifier).updateRate(timestamp, newRating.toInt());
+          onRatingUpdate: (newRating) {
+            ref.read(postNotifierProvider.notifier).updateRate(timestamp, newRating.toInt());
           },
         ),
         const SizedBox(height: 4),
@@ -76,58 +72,44 @@ class _TagInputField extends ConsumerStatefulWidget {
 class _TagInputFieldState extends ConsumerState<_TagInputField> {
   final TextEditingController _textEditorController = TextEditingController();
 
-  List<String> _inputedTags = [];
-
-  @override
-  void initState() {
-    super.initState();
-    setState(() {
-      _inputedTags = [];
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final post = ref.watch(postNotifierProvider);
+    final inputedTags = post?.tags ?? [];
     return Column(
       children: [
         TextFormField(
           controller: _textEditorController,
-          onFieldSubmitted: (input) async {
+          onFieldSubmitted: (input) {
             final value = input.trim();
             if (value.isEmpty) {
               return;
             }
-            final newTags = [..._inputedTags, value];
+            final newTags = [...inputedTags, value];
             _textEditorController.clear();
-            await ref.read(postNotifierProvider.notifier).updateTags(DateTime.now(), newTags);
-            setState(() {
-              _inputedTags = newTags;
-            });
+            ref.read(postNotifierProvider.notifier).updateTags(DateTime.now(), newTags);
           },
           decoration: const InputDecoration(
             icon: Icon(Icons.new_label_outlined),
             hintText: 'Enter label name',
           ),
         ),
-        if (_inputedTags.isNotEmpty) ...[
+        if (inputedTags.isNotEmpty) ...[
           const SizedBox(height: 12),
           SizedBox(
             height: 40,
             width: double.maxFinite,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: _inputedTags.map((s) {
+              children: inputedTags.map((s) {
                 return Padding(
                   padding: const EdgeInsets.only(right: 4),
                   child: Chip(
                     label: Text(s),
-                    onDeleted: () async {
-                      final newTags = [..._inputedTags];
+                    onDeleted: () {
+                      final newTags = [...inputedTags];
                       newTags.remove(s);
-                      await ref.read(postNotifierProvider.notifier).updateTags(DateTime.now(), newTags);
-                      setState(() {
-                        _inputedTags = newTags;
-                      });
+                      ref.read(postNotifierProvider.notifier).updateTags(DateTime.now(), newTags);
                     },
                   ),
                 );
