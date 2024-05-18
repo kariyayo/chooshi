@@ -49,15 +49,8 @@ class _Content extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final now = DateTime.now();
     final dt = DateTime(now.year, now.month - pageIndex);
-    final asyncPosts = ref.watch(postListNotifierProvider(Month(year: dt.year, month: dt.month)));
-    switch (asyncPosts) {
-      case AsyncData(:final value):
-        return _Posts(value);
-      case AsyncError(:final error):
-        return Center(child: Text('Error: $error'));
-      default:
-        return const Center(child: CircularProgressIndicator());
-    }
+    final posts = ref.watch(postListNotifierProvider(Month(year: dt.year, month: dt.month)));
+    return _Posts(posts);
   }
 }
 
