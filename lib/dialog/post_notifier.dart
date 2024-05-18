@@ -1,52 +1,29 @@
-import 'dart:async';
-
 import 'package:chooshi/model/post.dart';
 import 'package:chooshi/storage/post_store.dart';
+import 'package:chooshi/storage/tag_store.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final postNotifierProvider = AutoDisposeAsyncNotifierProvider<PostNotifier, Post?>(() => PostNotifier(PostStore()));
+final postNotifierProvider = AutoDisposeNotifierProvider<PostNotifier, Post?>(PostNotifier.new);
 
-class PostNotifier extends AutoDisposeAsyncNotifier<Post?> {
-  PostNotifier(this._store);
-  final PostStore _store;
-
+class PostNotifier extends AutoDisposeNotifier<Post?> {
   @override
-  FutureOr<Post?> build() async {
-    return Future.value(null);
+  Post? build() {
+    return null;
   }
 
-  Future<void> updateRate(DateTime timestamp, int newRating) async {
-    final previous = await future;
-    if (previous != null) {
-      state = AsyncData(previous.copyWith(rating: newRating));
-    } else {
-      state = AsyncData(Post(timestamp: timestamp, rating: newRating, tags: []));
+  void updateRate(DateTime timestamp, int newRating) {
+    state = state?.copyWith(rating: newRating);
+    state ??= Post(timestamp: timestamp, rating: newRating, tags: []);
+  }
+
+  void updateTags(DateTime timestamp, List<String> tags) {
+    state = state?.copyWith(tags: tags);
+    state ??= Post(timestamp: timestamp, rating: 0, tags: []);
+  }
+
+  void addPost() {
+    if (state != null) {
+      ref.read(postStoreProvider).add(state!);
     }
-  }
-
-  Future<void> updateTags(DateTime timestamp, List<String> tags) async {
-    final previous = await future;
-    if (previous != null) {
-      state = AsyncData(previous.copyWith(tags: tags));
-    } else {
-      state = AsyncData(Post(timestamp: timestamp, rating: 0, tags: []));
-    }
-  }
-
-  Future<void> addPost() async {
-    final data = await future;
-    if (data == null) return;
-    state = const AsyncLoading();
-    await Future.wait([
-      _store.add(data),
-      Future.delayed(const Duration(seconds: 3)),
-    ]);
-    state = await AsyncValue.guard(
-      () => Future.value(Post(
-        timestamp: data.timestamp,
-        rating: data.rating,
-        tags: data.tags,
-      )),
-    );
   }
 }
