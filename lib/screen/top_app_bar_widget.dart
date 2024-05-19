@@ -1,4 +1,5 @@
 import 'package:chooshi/model/month.dart';
+import 'package:chooshi/screen/tag_list_screen.dart';
 import 'package:chooshi/screen/top_seleted_page_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -82,6 +83,14 @@ class _TopAppBarWidgetState extends ConsumerState<TopAppBarWidget> {
           );
         },
       ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.insert_chart_outlined_outlined),
+          onPressed: () {
+            Navigator.of(context).push(TagListScrean.route());
+          },
+        )
+      ],
       toolbarHeight: toolbarHeight,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(bottomHeight),

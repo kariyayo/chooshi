@@ -14,12 +14,24 @@ class TagDetailStore {
   const TagDetailStore(this._prefs);
   final SharedPreferences _prefs;
 
-  String _key({required String tagLabel}) {
+  String _keyAll() {
+    return 'tags';
+  }
+
+  String _keyByLabel({required String tagLabel}) {
     return 'tags_$tagLabel';
   }
 
-  TagDetail? fetch(String tag) {
-    final key = _key(tagLabel: tag);
+  List<TagDetail> fetch() {
+    final jsonList = _prefs.getStringList(_keyAll());
+    if (jsonList == null) {
+      return [];
+    }
+    return jsonList.map((json) => TagDetail.fromJson(jsonDecode(json) as Map<String, dynamic>)).toList();
+  }
+
+  TagDetail? fetchBy(String tag) {
+    final key = _keyByLabel(tagLabel: tag);
     final json = _prefs.getString(key);
     if (json == null) {
       return null;
@@ -28,7 +40,7 @@ class TagDetailStore {
   }
 
   void add(String tag, int rating) {
-    final key = _key(tagLabel: tag);
+    final key = _keyByLabel(tagLabel: tag);
     final json = _prefs.getString(key);
     final TagDetail newTagDetail;
     if (json == null) {
@@ -45,10 +57,24 @@ class TagDetailStore {
       newTagDetail = tagDetail.add(rating);
     }
     _prefs.setString(key, jsonEncode(newTagDetail));
+
+    final tagDetails = fetch();
+    if (tagDetails.contains(newTagDetail)) {
+      tagDetails.remove(newTagDetail);
+    }
+    tagDetails.add(newTagDetail);
+    tagDetails.sort((a, b) {
+      if (a.mean == b.mean) {
+        return a.label.compareTo(b.label);
+      } else {
+        return -1 * a.mean.compareTo(b.mean);
+      }
+    });
+    _prefs.setStringList(_keyAll(), tagDetails.map((tagDetail) => jsonEncode(tagDetail)).toList());
   }
 
   void remove(String tag, int rating) {
-    final key = _key(tagLabel: tag);
+    final key = _keyByLabel(tagLabel: tag);
     final json = _prefs.getString(key);
     if (json == null) {
       return;
