@@ -15,7 +15,7 @@ class TagDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tagDetail = ref.read(tagDetailStoreProvider).fetch(tag);
+    final tagDetail = ref.read(tagDetailStoreProvider).fetchBy(tag);
     return Scaffold(
       appBar: AppBar(
         title: Text(tag),

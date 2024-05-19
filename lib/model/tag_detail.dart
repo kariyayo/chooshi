@@ -26,7 +26,7 @@ class TagDetail with _$TagDetail {
       (value) => value + 1,
       ifAbsent: () => 1,
     );
-    return copyWith(count: newCount, mean: newMean);
+    return copyWith(count: newCount, mean: newMean, ratings: newRatings);
   }
 
   TagDetail remove(int rating) {
@@ -41,6 +41,6 @@ class TagDetail with _$TagDetail {
       (value) => value - 1 < 0 ? 0 : value - 1,
       ifAbsent: () => 0,
     );
-    return copyWith(count: newCount, mean: newMean);
+    return copyWith(count: newCount, mean: newMean, ratings: newRatings);
   }
 }
