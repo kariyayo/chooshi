@@ -1,6 +1,7 @@
 import 'package:chooshi/model/month.dart';
 import 'package:chooshi/model/post.dart';
 import 'package:chooshi/screen/post_list_notifier.dart';
+import 'package:chooshi/screen/tag_detail_screen.dart';
 import 'package:chooshi/screen/top_seleted_page_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -122,8 +123,11 @@ class _PostRow extends ConsumerWidget {
           children: post.tags.map((s) {
             return Padding(
               padding: const EdgeInsets.only(right: 4),
-              child: Chip(
+              child: InputChip(
                 label: Text(s),
+                onPressed: () {
+                  Navigator.of(context).push(TagDetailScreen.route(s));
+                },
               ),
             );
           }).toList(),

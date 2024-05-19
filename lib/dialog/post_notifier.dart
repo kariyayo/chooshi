@@ -23,7 +23,11 @@ class PostNotifier extends AutoDisposeNotifier<Post?> {
 
   void addPost() {
     if (state != null) {
-      ref.read(postStoreProvider).add(state!);
+      final post = state!;
+      ref.read(postStoreProvider).add(post);
+      for (var tag in post.tags) {
+        ref.read(tagDetailStoreProvider).add(tag, post.rating);
+      }
     }
   }
 }
