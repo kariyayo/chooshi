@@ -1,39 +1,51 @@
-import 'package:chooshi/dialog/post_notifier.dart';
+import 'package:chooshi/dialog/post_form_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-Future<void> showPostDialog(BuildContext context, WidgetRef ref, DateTime dateTime) async {
+Future<void> showPostDialog(BuildContext context, DateTime dateTime) async {
   return await showDialog(
     context: context,
-    builder: (BuildContext context) => AlertDialog(
-      backgroundColor: Colors.white,
-      surfaceTintColor: Colors.transparent,
-      title: Text(
-        DateFormat('yyyy.MM.dd\nHH:mm').format(dateTime),
-        textAlign: TextAlign.center,
-      ),
-      content: _Content(timestamp: dateTime),
-      actionsPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        title: Text(
+          DateFormat('yyyy.MM.dd\nHH:mm').format(dateTime),
+          textAlign: TextAlign.center,
         ),
-        Consumer(builder: (BuildContext context, WidgetRef ref, Widget? child) {
-          return TextButton(
-            onPressed: () {
-              ref.read(postNotifierProvider.notifier).addPost();
-              if (context.mounted) {
-                Navigator.pop(context);
-              }
+        content: _Content(timestamp: dateTime),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          Consumer(
+            builder: (BuildContext context, WidgetRef ref, Widget? child) {
+              final postForm = ref.watch(postFormNotifierProvider);
+              print('build postForm:$postForm');
+              return TextButton(
+                onPressed: postForm.validate()
+                    ? () {
+                        ref.read(postFormNotifierProvider.notifier).addPost();
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
+                      }
+                    : null,
+                child: Text(
+                  'Add',
+                  style: postForm.validate() ? null : const TextStyle(color: Colors.grey),
+                ),
+              );
             },
-            child: const Text('OK'),
-          );
-        }),
-      ],
-    ),
+          ),
+        ],
+      );
+    },
   );
 }
 
@@ -44,7 +56,6 @@ class _Content extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _ = ref.watch(postNotifierProvider);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -54,7 +65,7 @@ class _Content extends ConsumerWidget {
           itemCount: 5,
           itemBuilder: (context, _) => const Icon(Icons.star, color: Colors.amber),
           onRatingUpdate: (newRating) {
-            ref.read(postNotifierProvider.notifier).updateRate(timestamp, newRating.toInt());
+            ref.read(postFormNotifierProvider.notifier).updateRate(timestamp, newRating.toInt());
           },
         ),
         const SizedBox(height: 4),
@@ -74,8 +85,8 @@ class _TagInputFieldState extends ConsumerState<_TagInputField> {
 
   @override
   Widget build(BuildContext context) {
-    final post = ref.watch(postNotifierProvider);
-    final inputedTags = post?.tags ?? [];
+    final postForm = ref.watch(postFormNotifierProvider);
+    final inputedTags = postForm.tags ?? [];
     return Column(
       children: [
         TextFormField(
@@ -87,7 +98,7 @@ class _TagInputFieldState extends ConsumerState<_TagInputField> {
             }
             final newTags = [...inputedTags, value];
             _textEditorController.clear();
-            ref.read(postNotifierProvider.notifier).updateTags(DateTime.now(), newTags);
+            ref.read(postFormNotifierProvider.notifier).updateTags(DateTime.now(), newTags);
           },
           decoration: const InputDecoration(
             icon: Icon(Icons.new_label_outlined),
@@ -109,7 +120,7 @@ class _TagInputFieldState extends ConsumerState<_TagInputField> {
                     onDeleted: () {
                       final newTags = [...inputedTags];
                       newTags.remove(s);
-                      ref.read(postNotifierProvider.notifier).updateTags(DateTime.now(), newTags);
+                      ref.read(postFormNotifierProvider.notifier).updateTags(DateTime.now(), newTags);
                     },
                   ),
                 );

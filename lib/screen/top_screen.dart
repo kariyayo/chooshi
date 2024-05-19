@@ -17,7 +17,7 @@ class TopScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final now = DateTime.now();
-          await showPostDialog(context, ref, now);
+          await showPostDialog(context, now);
           ref.read(postListNotifierProvider(Month(year: now.year, month: now.month)).notifier).refresh();
         },
         child: const Icon(Icons.add),
