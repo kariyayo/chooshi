@@ -115,12 +115,13 @@ class __$$PostImplCopyWithImpl<$Res>
 /// @nodoc
 
 @JsonSerializable(explicitToJson: true)
-class _$PostImpl implements _Post {
+class _$PostImpl extends _Post {
   const _$PostImpl(
       {required this.timestamp,
       required this.rating,
       required final List<String> tags})
-      : _tags = tags;
+      : _tags = tags,
+        super._();
 
   factory _$PostImpl.fromJson(Map<String, dynamic> json) =>
       _$$PostImplFromJson(json);
@@ -172,11 +173,12 @@ class _$PostImpl implements _Post {
   }
 }
 
-abstract class _Post implements Post {
+abstract class _Post extends Post {
   const factory _Post(
       {required final DateTime timestamp,
       required final int rating,
       required final List<String> tags}) = _$PostImpl;
+  const _Post._() : super._();
 
   factory _Post.fromJson(Map<String, dynamic> json) = _$PostImpl.fromJson;
 
