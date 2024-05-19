@@ -57,7 +57,26 @@ class TagDetailStore {
       newTagDetail = tagDetail.add(rating);
     }
     _prefs.setString(key, jsonEncode(newTagDetail));
+    _addToAll(newTagDetail);
+  }
 
+  void remove(String tag, int rating) {
+    final key = _keyByLabel(tagLabel: tag);
+    final json = _prefs.getString(key);
+    if (json == null) {
+      return;
+    }
+    final tagDetail = TagDetail.fromJson(jsonDecode(json) as Map<String, dynamic>);
+    if (tagDetail.count == 1) {
+      _prefs.remove(key);
+      _removeFromAll(tagDetail);
+    } else {
+      final newTagDetail = tagDetail.remove(rating);
+      _prefs.setString(key, jsonEncode(newTagDetail));
+    }
+  }
+
+  void _addToAll(TagDetail newTagDetail) {
     final tagDetails = fetch();
     if (tagDetails.contains(newTagDetail)) {
       tagDetails.remove(newTagDetail);
@@ -73,18 +92,9 @@ class TagDetailStore {
     _prefs.setStringList(_keyAll(), tagDetails.map((tagDetail) => jsonEncode(tagDetail)).toList());
   }
 
-  void remove(String tag, int rating) {
-    final key = _keyByLabel(tagLabel: tag);
-    final json = _prefs.getString(key);
-    if (json == null) {
-      return;
-    }
-    final tagDetail = TagDetail.fromJson(jsonDecode(json) as Map<String, dynamic>);
-    if (tagDetail.count == 1) {
-      _prefs.remove(key);
-    } else {
-      final newTagDetail = tagDetail.remove(rating);
-      _prefs.setString(key, jsonEncode(newTagDetail));
-    }
+  void _removeFromAll(TagDetail tagDetail) {
+    final tagDetails = fetch();
+    tagDetails.remove(tagDetail);
+    _prefs.setStringList(_keyAll(), tagDetails.map((tagDetail) => jsonEncode(tagDetail)).toList());
   }
 }
