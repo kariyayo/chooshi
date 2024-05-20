@@ -16,6 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$PostForm {
+  bool get isLoading => throw _privateConstructorUsedError;
   int? get rating => throw _privateConstructorUsedError;
   List<String>? get tags => throw _privateConstructorUsedError;
 
@@ -29,7 +30,7 @@ abstract class $PostFormCopyWith<$Res> {
   factory $PostFormCopyWith(PostForm value, $Res Function(PostForm) then) =
       _$PostFormCopyWithImpl<$Res, PostForm>;
   @useResult
-  $Res call({int? rating, List<String>? tags});
+  $Res call({bool isLoading, int? rating, List<String>? tags});
 }
 
 /// @nodoc
@@ -45,10 +46,15 @@ class _$PostFormCopyWithImpl<$Res, $Val extends PostForm>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? isLoading = null,
     Object? rating = freezed,
     Object? tags = freezed,
   }) {
     return _then(_value.copyWith(
+      isLoading: null == isLoading
+          ? _value.isLoading
+          : isLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
       rating: freezed == rating
           ? _value.rating
           : rating // ignore: cast_nullable_to_non_nullable
@@ -69,7 +75,7 @@ abstract class _$$PostFormImplCopyWith<$Res>
       __$$PostFormImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int? rating, List<String>? tags});
+  $Res call({bool isLoading, int? rating, List<String>? tags});
 }
 
 /// @nodoc
@@ -83,10 +89,15 @@ class __$$PostFormImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? isLoading = null,
     Object? rating = freezed,
     Object? tags = freezed,
   }) {
     return _then(_$PostFormImpl(
+      isLoading: null == isLoading
+          ? _value.isLoading
+          : isLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
       rating: freezed == rating
           ? _value.rating
           : rating // ignore: cast_nullable_to_non_nullable
@@ -102,10 +113,13 @@ class __$$PostFormImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$PostFormImpl extends _PostForm {
-  const _$PostFormImpl({this.rating, final List<String>? tags})
+  const _$PostFormImpl(
+      {required this.isLoading, this.rating, final List<String>? tags})
       : _tags = tags,
         super._();
 
+  @override
+  final bool isLoading;
   @override
   final int? rating;
   final List<String>? _tags;
@@ -120,7 +134,7 @@ class _$PostFormImpl extends _PostForm {
 
   @override
   String toString() {
-    return 'PostForm(rating: $rating, tags: $tags)';
+    return 'PostForm(isLoading: $isLoading, rating: $rating, tags: $tags)';
   }
 
   @override
@@ -128,13 +142,15 @@ class _$PostFormImpl extends _PostForm {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PostFormImpl &&
+            (identical(other.isLoading, isLoading) ||
+                other.isLoading == isLoading) &&
             (identical(other.rating, rating) || other.rating == rating) &&
             const DeepCollectionEquality().equals(other._tags, _tags));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, rating, const DeepCollectionEquality().hash(_tags));
+  int get hashCode => Object.hash(runtimeType, isLoading, rating,
+      const DeepCollectionEquality().hash(_tags));
 
   @JsonKey(ignore: true)
   @override
@@ -144,10 +160,14 @@ class _$PostFormImpl extends _PostForm {
 }
 
 abstract class _PostForm extends PostForm {
-  const factory _PostForm({final int? rating, final List<String>? tags}) =
-      _$PostFormImpl;
+  const factory _PostForm(
+      {required final bool isLoading,
+      final int? rating,
+      final List<String>? tags}) = _$PostFormImpl;
   const _PostForm._() : super._();
 
+  @override
+  bool get isLoading;
   @override
   int? get rating;
   @override

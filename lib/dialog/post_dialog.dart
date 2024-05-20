@@ -19,27 +19,39 @@ Future<void> showPostDialog(BuildContext context, DateTime dateTime) async {
         content: _Content(timestamp: dateTime),
         actionsPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+          Consumer(
+            builder: (BuildContext context, WidgetRef ref, Widget? child) {
+              final postForm = ref.watch(postFormNotifierProvider);
+              return postForm.isLoading
+                  ? const SizedBox()
+                  : TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel'),
+                    );
+            },
           ),
           Consumer(
             builder: (BuildContext context, WidgetRef ref, Widget? child) {
               final postForm = ref.watch(postFormNotifierProvider);
-              return TextButton(
-                onPressed: postForm.validate()
-                    ? () {
-                        ref.read(postFormNotifierProvider.notifier).addPost();
-                        if (context.mounted) {
-                          Navigator.pop(context);
-                        }
-                      }
-                    : null,
-                child: Text(
-                  'Add',
-                  style: postForm.validate() ? null : const TextStyle(color: Colors.grey),
-                ),
-              );
+              return postForm.isLoading
+                  ? const Padding(
+                      padding: EdgeInsets.fromLTRB(0, 0, 8, 8),
+                      child: CircularProgressIndicator(),
+                    )
+                  : TextButton(
+                      onPressed: postForm.validate()
+                          ? () async {
+                              await ref.read(postFormNotifierProvider.notifier).addPost();
+                              if (context.mounted) {
+                                Navigator.pop(context);
+                              }
+                            }
+                          : null,
+                      child: Text(
+                        'Add',
+                        style: postForm.validate() ? null : const TextStyle(color: Colors.grey),
+                      ),
+                    );
             },
           ),
         ],

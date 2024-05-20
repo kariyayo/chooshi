@@ -5,6 +5,7 @@ part 'post_add_form.freezed.dart';
 @freezed
 class PostForm with _$PostForm {
   const factory PostForm({
+    required bool isLoading,
     int? rating,
     List<String>? tags,
   }) = _PostForm;

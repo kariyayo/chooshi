@@ -9,7 +9,7 @@ final postFormNotifierProvider = AutoDisposeNotifierProvider<PostFormNotifier, P
 class PostFormNotifier extends AutoDisposeNotifier<PostForm> {
   @override
   PostForm build() {
-    return const PostForm();
+    return const PostForm(isLoading: false);
   }
 
   void updateRate(DateTime timestamp, int newRating) {
@@ -20,9 +20,13 @@ class PostFormNotifier extends AutoDisposeNotifier<PostForm> {
     state = state.copyWith(tags: tags);
   }
 
-  void addPost() {
+  Future<void> addPost() async {
+    state = state.copyWith(isLoading: true);
     final post = Post(timestamp: DateTime.now(), rating: state.rating!, tags: state.tags!);
-    ref.read(postStoreProvider).add(post);
+    await Future.wait([
+      Future.sync(() => ref.read(postStoreProvider).add(post)),
+      Future.delayed(const Duration(seconds: 1)),
+    ]);
     for (var tag in post.tags) {
       ref.read(tagDetailStoreProvider).add(tag, post.rating);
     }
