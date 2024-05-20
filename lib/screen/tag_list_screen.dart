@@ -15,6 +15,7 @@ class TagListScrean extends ConsumerWidget {
     final tagDetailList = ref.read(tagDetailStoreProvider).fetch();
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('Tags'),
       ),
       body: SafeArea(

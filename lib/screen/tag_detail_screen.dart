@@ -18,6 +18,7 @@ class TagDetailScreen extends ConsumerWidget {
     final tagDetail = ref.read(tagDetailStoreProvider).fetchBy(tag);
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(tag),
       ),
       body: SafeArea(

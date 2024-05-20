@@ -74,6 +74,7 @@ class _TopAppBarWidgetState extends ConsumerState<TopAppBarWidget> {
       );
     });
     return AppBar(
+      centerTitle: true,
       backgroundColor: Colors.white,
       title: Consumer(
         builder: (context, ref, _) {
