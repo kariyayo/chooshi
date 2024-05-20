@@ -12,7 +12,6 @@ class PostForm with _$PostForm {
   const PostForm._();
 
   bool validate() {
-    print('validate rating: $rating, tags: $tags');
     return rating != null && tags?.isNotEmpty == true;
   }
 }

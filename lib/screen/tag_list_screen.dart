@@ -1,4 +1,3 @@
-import 'package:chooshi/model/tag_detail.dart';
 import 'package:chooshi/screen/tag_detail_screen.dart';
 import 'package:chooshi/storage/tag_store.dart';
 import 'package:flutter/material.dart';

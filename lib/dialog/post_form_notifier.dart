@@ -13,12 +13,10 @@ class PostFormNotifier extends AutoDisposeNotifier<PostForm> {
   }
 
   void updateRate(DateTime timestamp, int newRating) {
-    print('updateRate');
     state = state.copyWith(rating: newRating);
   }
 
   void updateTags(DateTime timestamp, List<String> tags) {
-    print('updateTags');
     state = state.copyWith(tags: tags);
   }
 

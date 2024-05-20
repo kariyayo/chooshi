@@ -26,7 +26,6 @@ Future<void> showPostDialog(BuildContext context, DateTime dateTime) async {
           Consumer(
             builder: (BuildContext context, WidgetRef ref, Widget? child) {
               final postForm = ref.watch(postFormNotifierProvider);
-              print('build postForm:$postForm');
               return TextButton(
                 onPressed: postForm.validate()
                     ? () {
