@@ -17,19 +17,21 @@ class TagListScrean extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Tags'),
       ),
-      body: tagDetailList.isEmpty
-          ? const Center(child: Text('No data'))
-          : ListView(
-              children: tagDetailList.map((tagDetail) {
-                return ListTile(
-                  title: Text(tagDetail.label),
-                  trailing: Text(tagDetail.mean.toString()),
-                  onTap: () {
-                    Navigator.of(context).push(TagDetailScreen.route(tagDetail.label));
-                  },
-                );
-              }).toList(),
-            ),
+      body: SafeArea(
+        child: tagDetailList.isEmpty
+            ? const Center(child: Text('No data'))
+            : ListView(
+                children: tagDetailList.map((tagDetail) {
+                  return ListTile(
+                    title: Text(tagDetail.label),
+                    trailing: Text(tagDetail.mean.toString()),
+                    onTap: () {
+                      Navigator.of(context).push(TagDetailScreen.route(tagDetail.label));
+                    },
+                  );
+                }).toList(),
+              ),
+      ),
     );
   }
 }

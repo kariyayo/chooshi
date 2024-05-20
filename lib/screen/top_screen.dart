@@ -13,7 +13,7 @@ class TopScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: const TopAppBarWidget(),
-      body: const TopBodyWidget(),
+      body: const SafeArea(child: TopBodyWidget()),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final now = DateTime.now();

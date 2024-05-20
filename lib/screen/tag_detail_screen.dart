@@ -20,11 +20,13 @@ class TagDetailScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(tag),
       ),
-      body: tagDetail == null
-          ? const Center(child: Text('No data'))
-          : Center(
-              child: _Content(tagDetail: tagDetail),
-            ),
+      body: SafeArea(
+        child: tagDetail == null
+            ? const Center(child: Text('No data'))
+            : Center(
+                child: _Content(tagDetail: tagDetail),
+              ),
+      ),
     );
   }
 }
