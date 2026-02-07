@@ -12,7 +12,8 @@ part of 'tag_detail.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 TagDetail _$TagDetailFromJson(Map<String, dynamic> json) {
   return _TagDetail.fromJson(json);
@@ -25,8 +26,12 @@ mixin _$TagDetail {
   double get mean => throw _privateConstructorUsedError;
   Map<int, int> get ratings => throw _privateConstructorUsedError;
 
+  /// Serializes this TagDetail to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of TagDetail
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $TagDetailCopyWith<TagDetail> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -49,6 +54,8 @@ class _$TagDetailCopyWithImpl<$Res, $Val extends TagDetail>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of TagDetail
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -57,24 +64,27 @@ class _$TagDetailCopyWithImpl<$Res, $Val extends TagDetail>
     Object? mean = null,
     Object? ratings = null,
   }) {
-    return _then(_value.copyWith(
-      label: null == label
-          ? _value.label
-          : label // ignore: cast_nullable_to_non_nullable
-              as String,
-      count: null == count
-          ? _value.count
-          : count // ignore: cast_nullable_to_non_nullable
-              as double,
-      mean: null == mean
-          ? _value.mean
-          : mean // ignore: cast_nullable_to_non_nullable
-              as double,
-      ratings: null == ratings
-          ? _value.ratings
-          : ratings // ignore: cast_nullable_to_non_nullable
-              as Map<int, int>,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            label: null == label
+                ? _value.label
+                : label // ignore: cast_nullable_to_non_nullable
+                      as String,
+            count: null == count
+                ? _value.count
+                : count // ignore: cast_nullable_to_non_nullable
+                      as double,
+            mean: null == mean
+                ? _value.mean
+                : mean // ignore: cast_nullable_to_non_nullable
+                      as double,
+            ratings: null == ratings
+                ? _value.ratings
+                : ratings // ignore: cast_nullable_to_non_nullable
+                      as Map<int, int>,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -82,8 +92,9 @@ class _$TagDetailCopyWithImpl<$Res, $Val extends TagDetail>
 abstract class _$$TagDetailImplCopyWith<$Res>
     implements $TagDetailCopyWith<$Res> {
   factory _$$TagDetailImplCopyWith(
-          _$TagDetailImpl value, $Res Function(_$TagDetailImpl) then) =
-      __$$TagDetailImplCopyWithImpl<$Res>;
+    _$TagDetailImpl value,
+    $Res Function(_$TagDetailImpl) then,
+  ) = __$$TagDetailImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String label, double count, double mean, Map<int, int> ratings});
@@ -94,9 +105,12 @@ class __$$TagDetailImplCopyWithImpl<$Res>
     extends _$TagDetailCopyWithImpl<$Res, _$TagDetailImpl>
     implements _$$TagDetailImplCopyWith<$Res> {
   __$$TagDetailImplCopyWithImpl(
-      _$TagDetailImpl _value, $Res Function(_$TagDetailImpl) _then)
-      : super(_value, _then);
+    _$TagDetailImpl _value,
+    $Res Function(_$TagDetailImpl) _then,
+  ) : super(_value, _then);
 
+  /// Create a copy of TagDetail
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -105,24 +119,26 @@ class __$$TagDetailImplCopyWithImpl<$Res>
     Object? mean = null,
     Object? ratings = null,
   }) {
-    return _then(_$TagDetailImpl(
-      label: null == label
-          ? _value.label
-          : label // ignore: cast_nullable_to_non_nullable
-              as String,
-      count: null == count
-          ? _value.count
-          : count // ignore: cast_nullable_to_non_nullable
-              as double,
-      mean: null == mean
-          ? _value.mean
-          : mean // ignore: cast_nullable_to_non_nullable
-              as double,
-      ratings: null == ratings
-          ? _value._ratings
-          : ratings // ignore: cast_nullable_to_non_nullable
-              as Map<int, int>,
-    ));
+    return _then(
+      _$TagDetailImpl(
+        label: null == label
+            ? _value.label
+            : label // ignore: cast_nullable_to_non_nullable
+                  as String,
+        count: null == count
+            ? _value.count
+            : count // ignore: cast_nullable_to_non_nullable
+                  as double,
+        mean: null == mean
+            ? _value.mean
+            : mean // ignore: cast_nullable_to_non_nullable
+                  as double,
+        ratings: null == ratings
+            ? _value._ratings
+            : ratings // ignore: cast_nullable_to_non_nullable
+                  as Map<int, int>,
+      ),
+    );
   }
 }
 
@@ -130,13 +146,13 @@ class __$$TagDetailImplCopyWithImpl<$Res>
 
 @JsonSerializable(explicitToJson: true)
 class _$TagDetailImpl extends _TagDetail {
-  const _$TagDetailImpl(
-      {required this.label,
-      required this.count,
-      required this.mean,
-      required final Map<int, int> ratings})
-      : _ratings = ratings,
-        super._();
+  const _$TagDetailImpl({
+    required this.label,
+    required this.count,
+    required this.mean,
+    required final Map<int, int> ratings,
+  }) : _ratings = ratings,
+       super._();
 
   factory _$TagDetailImpl.fromJson(Map<String, dynamic> json) =>
       _$$TagDetailImplFromJson(json);
@@ -171,12 +187,19 @@ class _$TagDetailImpl extends _TagDetail {
             const DeepCollectionEquality().equals(other._ratings, _ratings));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, label, count, mean,
-      const DeepCollectionEquality().hash(_ratings));
+  int get hashCode => Object.hash(
+    runtimeType,
+    label,
+    count,
+    mean,
+    const DeepCollectionEquality().hash(_ratings),
+  );
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TagDetail
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TagDetailImplCopyWith<_$TagDetailImpl> get copyWith =>
@@ -184,18 +207,17 @@ class _$TagDetailImpl extends _TagDetail {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$TagDetailImplToJson(
-      this,
-    );
+    return _$$TagDetailImplToJson(this);
   }
 }
 
 abstract class _TagDetail extends TagDetail {
-  const factory _TagDetail(
-      {required final String label,
-      required final double count,
-      required final double mean,
-      required final Map<int, int> ratings}) = _$TagDetailImpl;
+  const factory _TagDetail({
+    required final String label,
+    required final double count,
+    required final double mean,
+    required final Map<int, int> ratings,
+  }) = _$TagDetailImpl;
   const _TagDetail._() : super._();
 
   factory _TagDetail.fromJson(Map<String, dynamic> json) =
@@ -209,8 +231,11 @@ abstract class _TagDetail extends TagDetail {
   double get mean;
   @override
   Map<int, int> get ratings;
+
+  /// Create a copy of TagDetail
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TagDetailImplCopyWith<_$TagDetailImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
