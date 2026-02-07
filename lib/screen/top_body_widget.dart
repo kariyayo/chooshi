@@ -75,8 +75,6 @@ class _PostState extends State<_Posts> {
       return ListView.separated(
         controller: _scrollController,
         itemCount: posts.length,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
         separatorBuilder: (BuildContext context, int index) => const Divider(),
         itemBuilder: (BuildContext context, int index) {
           var post = posts[index];
