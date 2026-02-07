@@ -29,6 +29,12 @@ class _TopBodyWidgetState extends ConsumerState<TopBodyWidget> {
   }
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     ref.listen(topSelectedPageNotifierProvider, (previous, next) {
       _pageController.jumpToPage(next);
@@ -65,6 +71,12 @@ class _Posts extends StatefulWidget {
 
 class _PostState extends State<_Posts> {
   final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
