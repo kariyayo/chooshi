@@ -101,7 +101,7 @@ class _Chart extends ConsumerWidget {
     return BarChart(
       BarChartData(
         maxY: maxCount * 1.4,
-        backgroundColor: Colors.blueGrey.withOpacity(0.25),
+        backgroundColor: Colors.blueGrey.withValues(alpha: 0.25),
         borderData: FlBorderData(border: const Border(bottom: BorderSide(color: Colors.black))),
         gridData: const FlGridData(show: false),
         barGroups: barGroup,
