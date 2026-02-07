@@ -41,3 +41,32 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Environment and secrets
+.env
+.env.*
+secrets.json
+secrets.yaml
+
+# API keys and credentials
+*.pem
+credentials.json
+
+# Firebase config (uncomment if using Firebase)
+# **/google-services.json
+# **/GoogleService-Info.plist
+
+# iOS signing (not covered by ios/.gitignore)
+ios/*.mobileprovision
+ios/*.p12
+ios/fastlane/
+
+# Coverage
+coverage/
+*.lcov
+
+# Test artifacts
+test-results/
+
+# OS generated files
+Thumbs.db
