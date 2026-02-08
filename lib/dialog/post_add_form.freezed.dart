@@ -20,6 +20,7 @@ mixin _$PostForm {
   bool get isLoading => throw _privateConstructorUsedError;
   int? get rating => throw _privateConstructorUsedError;
   List<String>? get tags => throw _privateConstructorUsedError;
+  Post? get originalPost => throw _privateConstructorUsedError;
 
   /// Create a copy of PostForm
   /// with the given fields replaced by the non-null parameter values.
@@ -33,7 +34,14 @@ abstract class $PostFormCopyWith<$Res> {
   factory $PostFormCopyWith(PostForm value, $Res Function(PostForm) then) =
       _$PostFormCopyWithImpl<$Res, PostForm>;
   @useResult
-  $Res call({bool isLoading, int? rating, List<String>? tags});
+  $Res call({
+    bool isLoading,
+    int? rating,
+    List<String>? tags,
+    Post? originalPost,
+  });
+
+  $PostCopyWith<$Res>? get originalPost;
 }
 
 /// @nodoc
@@ -54,6 +62,7 @@ class _$PostFormCopyWithImpl<$Res, $Val extends PostForm>
     Object? isLoading = null,
     Object? rating = freezed,
     Object? tags = freezed,
+    Object? originalPost = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -69,9 +78,27 @@ class _$PostFormCopyWithImpl<$Res, $Val extends PostForm>
                 ? _value.tags
                 : tags // ignore: cast_nullable_to_non_nullable
                       as List<String>?,
+            originalPost: freezed == originalPost
+                ? _value.originalPost
+                : originalPost // ignore: cast_nullable_to_non_nullable
+                      as Post?,
           )
           as $Val,
     );
+  }
+
+  /// Create a copy of PostForm
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PostCopyWith<$Res>? get originalPost {
+    if (_value.originalPost == null) {
+      return null;
+    }
+
+    return $PostCopyWith<$Res>(_value.originalPost!, (value) {
+      return _then(_value.copyWith(originalPost: value) as $Val);
+    });
   }
 }
 
@@ -84,7 +111,15 @@ abstract class _$$PostFormImplCopyWith<$Res>
   ) = __$$PostFormImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool isLoading, int? rating, List<String>? tags});
+  $Res call({
+    bool isLoading,
+    int? rating,
+    List<String>? tags,
+    Post? originalPost,
+  });
+
+  @override
+  $PostCopyWith<$Res>? get originalPost;
 }
 
 /// @nodoc
@@ -104,6 +139,7 @@ class __$$PostFormImplCopyWithImpl<$Res>
     Object? isLoading = null,
     Object? rating = freezed,
     Object? tags = freezed,
+    Object? originalPost = freezed,
   }) {
     return _then(
       _$PostFormImpl(
@@ -119,6 +155,10 @@ class __$$PostFormImplCopyWithImpl<$Res>
             ? _value._tags
             : tags // ignore: cast_nullable_to_non_nullable
                   as List<String>?,
+        originalPost: freezed == originalPost
+            ? _value.originalPost
+            : originalPost // ignore: cast_nullable_to_non_nullable
+                  as Post?,
       ),
     );
   }
@@ -131,6 +171,7 @@ class _$PostFormImpl extends _PostForm {
     required this.isLoading,
     this.rating,
     final List<String>? tags,
+    this.originalPost,
   }) : _tags = tags,
        super._();
 
@@ -149,8 +190,11 @@ class _$PostFormImpl extends _PostForm {
   }
 
   @override
+  final Post? originalPost;
+
+  @override
   String toString() {
-    return 'PostForm(isLoading: $isLoading, rating: $rating, tags: $tags)';
+    return 'PostForm(isLoading: $isLoading, rating: $rating, tags: $tags, originalPost: $originalPost)';
   }
 
   @override
@@ -161,7 +205,9 @@ class _$PostFormImpl extends _PostForm {
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
             (identical(other.rating, rating) || other.rating == rating) &&
-            const DeepCollectionEquality().equals(other._tags, _tags));
+            const DeepCollectionEquality().equals(other._tags, _tags) &&
+            (identical(other.originalPost, originalPost) ||
+                other.originalPost == originalPost));
   }
 
   @override
@@ -170,6 +216,7 @@ class _$PostFormImpl extends _PostForm {
     isLoading,
     rating,
     const DeepCollectionEquality().hash(_tags),
+    originalPost,
   );
 
   /// Create a copy of PostForm
@@ -186,6 +233,7 @@ abstract class _PostForm extends PostForm {
     required final bool isLoading,
     final int? rating,
     final List<String>? tags,
+    final Post? originalPost,
   }) = _$PostFormImpl;
   const _PostForm._() : super._();
 
@@ -195,6 +243,8 @@ abstract class _PostForm extends PostForm {
   int? get rating;
   @override
   List<String>? get tags;
+  @override
+  Post? get originalPost;
 
   /// Create a copy of PostForm
   /// with the given fields replaced by the non-null parameter values.

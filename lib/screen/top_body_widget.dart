@@ -1,3 +1,4 @@
+import 'package:chooshi/dialog/post_dialog.dart';
 import 'package:chooshi/model/month.dart';
 import 'package:chooshi/model/post.dart';
 import 'package:chooshi/screen/post_list_notifier.dart';
@@ -154,6 +155,12 @@ class _PostRow extends ConsumerWidget {
             context: context,
             position: RelativeRect.fromLTRB(pos.dx, pos.dy, 0, 0),
             items: [
+              PopupMenuItem(
+                child: const Row(children: [Icon(Icons.edit), Text('Edit')]),
+                onTap: () {
+                  showPostDialog(context, post.timestamp, editingPost: post);
+                },
+              ),
               PopupMenuItem(
                 child: const Row(children: [Icon(Icons.delete), Text('Remove')]),
                 onTap: () {
