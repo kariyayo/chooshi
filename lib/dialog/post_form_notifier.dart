@@ -44,40 +44,31 @@ class PostFormNotifier extends AutoDisposeNotifier<PostForm> {
 
   Future<void> updatePost() async {
     state = state.copyWith(isLoading: true);
-    final oldPost = state.originalPost!;
-    final newPost = Post(
-      timestamp: oldPost.timestamp,
-      rating: state.rating!,
-      tags: state.tags!,
-    );
+    try {
+      final oldPost = state.originalPost!;
+      final newPost = Post(
+        timestamp: oldPost.timestamp,
+        rating: state.rating!,
+        tags: state.tags!,
+      );
 
-    ref.read(postStoreProvider).update(oldPost, newPost);
+      ref.read(postStoreProvider).update(oldPost, newPost);
 
-    final oldTags = oldPost.tags.toSet();
-    final newTags = newPost.tags.toSet();
-    final oldRating = oldPost.rating;
-    final newRating = newPost.rating;
-
-    // タグ削除: 元の投稿にあって新しい投稿にないタグ
-    for (var tag in oldTags.difference(newTags)) {
-      ref.read(tagDetailStoreProvider).remove(tag, oldRating);
-    }
-
-    // タグ追加: 新しい投稿にあって元の投稿にないタグ
-    for (var tag in newTags.difference(oldTags)) {
-      ref.read(tagDetailStoreProvider).add(tag, newRating);
-    }
-
-    // 共通タグでレーティング変更がある場合
-    if (oldRating != newRating) {
-      for (var tag in oldTags.intersection(newTags)) {
-        ref.read(tagDetailStoreProvider).remove(tag, oldRating);
-        ref.read(tagDetailStoreProvider).add(tag, newRating);
+      // 古い投稿の貢献をすべて削除
+      for (final tag in oldPost.tags) {
+        ref.read(tagDetailStoreProvider).remove(tag, oldPost.rating);
       }
-    }
 
-    // リストを更新
-    final dt = oldPost.timestamp;
-    ref.read(postListNotifierProvider(Month(year: dt.year, month: dt.month)).notifier).refresh();
+      // 新しい投稿の貢献をすべて追加
+      for (final tag in newPost.tags) {
+        ref.read(tagDetailStoreProvider).add(tag, newPost.rating);
+      }
+
+      // リストを更新
+      final dt = oldPost.timestamp;
+      ref.read(postListNotifierProvider(Month(year: dt.year, month: dt.month)).notifier).refresh();
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
   }
 }
