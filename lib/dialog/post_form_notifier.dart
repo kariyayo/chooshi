@@ -51,10 +51,7 @@ class PostFormNotifier extends AutoDisposeNotifier<PostForm> {
       tags: state.tags!,
     );
 
-    await Future.wait([
-      Future.sync(() => ref.read(postStoreProvider).update(oldPost, newPost)),
-      Future.delayed(const Duration(seconds: 1)),
-    ]);
+    ref.read(postStoreProvider).update(oldPost, newPost);
 
     final oldTags = oldPost.tags.toSet();
     final newTags = newPost.tags.toSet();
