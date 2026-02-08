@@ -1,69 +1,97 @@
 import 'package:chooshi/dialog/post_form_notifier.dart';
+import 'package:chooshi/model/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-Future<void> showPostDialog(BuildContext context, DateTime dateTime) async {
+Future<void> showPostDialog(BuildContext context, DateTime dateTime, {Post? editingPost}) async {
   return await showDialog(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
-      return AlertDialog(
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.transparent,
-        title: Text(
-          DateFormat('yyyy.MM.dd\nHH:mm').format(dateTime),
-          textAlign: TextAlign.center,
-        ),
-        content: _Content(timestamp: dateTime),
-        actionsPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        actions: <Widget>[
-          Consumer(
-            builder: (BuildContext context, WidgetRef ref, Widget? child) {
-              final postForm = ref.watch(postFormNotifierProvider);
-              return postForm.isLoading
-                  ? const SizedBox()
-                  : TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Cancel'),
-                    );
-            },
-          ),
-          Consumer(
-            builder: (BuildContext context, WidgetRef ref, Widget? child) {
-              final postForm = ref.watch(postFormNotifierProvider);
-              return postForm.isLoading
-                  ? const Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 8, 8),
-                      child: CircularProgressIndicator(),
-                    )
-                  : TextButton(
-                      onPressed: postForm.validate()
-                          ? () async {
-                              await ref.read(postFormNotifierProvider.notifier).addPost();
-                              if (context.mounted) {
-                                Navigator.pop(context);
-                              }
-                            }
-                          : null,
-                      child: Text(
-                        'Add',
-                        style: postForm.validate() ? null : const TextStyle(color: Colors.grey),
-                      ),
-                    );
-            },
-          ),
-        ],
-      );
+      return _PostDialogContent(dateTime: dateTime, editingPost: editingPost);
     },
   );
 }
 
+class _PostDialogContent extends ConsumerStatefulWidget {
+  const _PostDialogContent({required this.dateTime, this.editingPost});
+  final DateTime dateTime;
+  final Post? editingPost;
+
+  @override
+  ConsumerState<_PostDialogContent> createState() => _PostDialogContentState();
+}
+
+class _PostDialogContentState extends ConsumerState<_PostDialogContent> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.editingPost != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(postFormNotifierProvider.notifier).initForEdit(widget.editingPost!);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final postForm = ref.watch(postFormNotifierProvider);
+    final isEditMode = widget.editingPost != null;
+
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      title: Text(
+        DateFormat('yyyy.MM.dd\nHH:mm').format(widget.dateTime),
+        textAlign: TextAlign.center,
+      ),
+      content: _Content(
+        timestamp: widget.dateTime,
+        initialRating: widget.editingPost?.rating.toDouble(),
+      ),
+      actionsPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      actions: <Widget>[
+        postForm.isLoading
+            ? const SizedBox()
+            : TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+        postForm.isLoading
+            ? const Padding(
+                padding: EdgeInsets.fromLTRB(0, 0, 8, 8),
+                child: CircularProgressIndicator(),
+              )
+            : TextButton(
+                onPressed: postForm.validate()
+                    ? () async {
+                        if (isEditMode) {
+                          await ref.read(postFormNotifierProvider.notifier).updatePost();
+                        } else {
+                          await ref.read(postFormNotifierProvider.notifier).addPost();
+                        }
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
+                      }
+                    : null,
+                child: Text(
+                  isEditMode ? 'Update' : 'Add',
+                  style: postForm.validate() ? null : const TextStyle(color: Colors.grey),
+                ),
+              ),
+      ],
+    );
+  }
+}
+
 class _Content extends ConsumerWidget {
-  const _Content({required this.timestamp});
+  const _Content({required this.timestamp, this.initialRating});
 
   final DateTime timestamp;
+  final double? initialRating;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -71,6 +99,7 @@ class _Content extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         RatingBar.builder(
+          initialRating: initialRating ?? 0,
           minRating: 1,
           direction: Axis.horizontal,
           itemCount: 5,

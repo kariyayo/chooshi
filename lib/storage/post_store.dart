@@ -44,4 +44,16 @@ class PostStore {
     _prefs.setStringList(key, list.map((post) => jsonEncode(post)).toList());
     return;
   }
+
+  void update(Post oldPost, Post newPost) {
+    final dt = oldPost.timestamp;
+    final month = Month(year: dt.year, month: dt.month);
+    final list = fetchByYearMonth(month);
+    final index = list.indexWhere((p) => p.timestamp == oldPost.timestamp);
+    if (index != -1) {
+      list[index] = newPost;
+      final key = _keyByMonth(year: month.year, month: month.month);
+      _prefs.setStringList(key, list.map((post) => jsonEncode(post)).toList());
+    }
+  }
 }
