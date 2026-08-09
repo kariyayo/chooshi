@@ -27,7 +27,14 @@ class TagDetailStore {
     if (jsonList == null) {
       return [];
     }
-    return jsonList.map((json) => TagDetail.fromJson(jsonDecode(json) as Map<String, dynamic>)).toList();
+    final list = jsonList.map((json) => TagDetail.fromJson(jsonDecode(json) as Map<String, dynamic>)).toList();
+
+    // 重複を排除（後から追加されたデータで上書き）
+    final Map<String, TagDetail> map = {};
+    for (final item in list) {
+      map[item.label] = item;
+    }
+    return map.values.toList();
   }
 
   TagDetail? fetchBy(String tag) {
@@ -46,12 +53,7 @@ class TagDetailStore {
     if (json == null) {
       final ratings = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
       ratings[rating] = 1;
-      newTagDetail = TagDetail(
-        label: tag,
-        count: 1,
-        mean: rating.toDouble(),
-        ratings: ratings,
-      );
+      newTagDetail = TagDetail(label: tag, count: 1, mean: rating.toDouble(), ratings: ratings);
     } else {
       final tagDetail = TagDetail.fromJson(jsonDecode(json) as Map<String, dynamic>);
       newTagDetail = tagDetail.add(rating);
@@ -78,9 +80,7 @@ class TagDetailStore {
 
   void _addToAll(TagDetail newTagDetail) {
     final tagDetails = fetch();
-    if (tagDetails.contains(newTagDetail)) {
-      tagDetails.remove(newTagDetail);
-    }
+    tagDetails.removeWhere((t) => t.label == newTagDetail.label);
     tagDetails.add(newTagDetail);
     tagDetails.sort((a, b) {
       if (a.mean == b.mean) {
@@ -94,7 +94,7 @@ class TagDetailStore {
 
   void _removeFromAll(TagDetail tagDetail) {
     final tagDetails = fetch();
-    tagDetails.remove(tagDetail);
+    tagDetails.removeWhere((t) => t.label == tagDetail.label);
     _prefs.setStringList(_keyAll(), tagDetails.map((tagDetail) => jsonEncode(tagDetail)).toList());
   }
 }

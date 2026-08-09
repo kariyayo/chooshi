@@ -11,6 +11,7 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+.claude/settings.local.json
 
 # IntelliJ related
 *.iml
@@ -72,3 +73,8 @@ test-results/
 
 # OS generated files
 Thumbs.db
+
+# Android keystore properties
+android/key.properties
+*.jks
+*.keystore
