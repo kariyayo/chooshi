@@ -22,6 +22,12 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace "info.bati11.chooshiapp"
     compileSdkVersion 36
@@ -51,11 +57,20 @@ android {
         versionName flutterVersionName
     }
 
+    signingConfigs {
+        release {
+            keyAlias = System.getenv("KEY_ALIAS") != null ? System.getenv("KEY_ALIAS") : keystoreProperties['keyAlias']
+            keyPassword = System.getenv("KEY_PASSWORD") != null ? System.getenv("KEY_PASSWORD") : keystoreProperties['keyPassword']
+            def envStoreFile = System.getenv("KEYSTORE_FILE_PATH")
+            def storeFilePath = envStoreFile != null ? envStoreFile : keystoreProperties['storeFile']
+            storeFile = storeFilePath ? file(storeFilePath) : null
+            storePassword = System.getenv("STORE_PASSWORD") != null ? System.getenv("STORE_PASSWORD") : keystoreProperties['storePassword']
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 }
