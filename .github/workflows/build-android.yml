@@ -39,7 +39,7 @@ jobs:
         env:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          KEYSTORE_FILE_PATH: upload-keystore.jks
+          KEYSTORE_FILE_PATH: ../upload-keystore.jks
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
         run: flutter build appbundle --release
 
